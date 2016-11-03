@@ -1,0 +1,48 @@
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li><a href="#/">Dashboard</a></li>
+                    <li><a href="#consultores">Consultores</a></li>
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--breadcrumbs end-->
+
+<!--start container-->
+<div class="container">
+    <div class="section">
+        <h1><i class="mdi-social-person"></i> {{data.nome}}</h1>
+        <div class="divider"></div>
+        <fieldset>
+            <legend>Informações Pessoais</legend>
+            <h5><strong>E-mail:</strong>  <a href="mailto:{{data.email}}" target="_blank" title="Email {{data.nome}}">{{data.email}}</a></h5>
+            <h5><strong>Telefone:</strong> <a href="callto:{{data.telefone}}" target="_blank" title="Telefone {{data.nome}}">{{data.telefone}}</a></h5>
+            <h5><strong>Celular:</strong> <a href="callto:{{data.celular}}" target="_blank" title="Celular {{data.nome}}">{{data.celular}}</a></h5>
+            <h5><strong>Data de Nascimento:</strong> {{data.data_nascimento}}</h5>
+            <h5><strong>CPF:</strong> {{data.cpf}}</h5>
+            <h5><strong>RG:</strong> {{data.rg}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Informações Residenciais</legend>
+            <h5><strong>Endereço:</strong> {{data.endereco}}, {{data.numero}}</h5>
+            <h5><strong>Bairro</strong> {{data.bairro}}</h5>
+            <h5><strong>CEP:</strong> {{data.cep}}</h5>
+            <h5><strong>Cidade:</strong> {{data.cidade}} - {{data.estado}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Informações de Redes Sociais</legend>
+            <h5><strong>Facebook:</strong> <a href="{{data.facebooks}}" target="_blank" title="Facebook {{data.usuario}}">{{data.facebook}}</a></h5>
+            <h5><strong>Linkedin:</strong> <a href="{{data.linkedin}}" target="_blank" title="Linkedin {{data.usuario}}">{{data.linkedin}}</a></h5>
+            <h5><strong>Whatsapp:</strong> <a href="whatsapp://send?abid=username&text={{data.whatsapp}}" title="Whatsapp {{data.usuario}}">{{data.whatsapp}}</a></h5>
+        </fieldset>
+
+    </div>
+</div>
+<!--end container-->

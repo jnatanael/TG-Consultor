@@ -1,0 +1,178 @@
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li><a href="#/">Dashboard</a></li>
+                    <li><a href="#mensagens/{{dataMsg.remetenteID}}">Mensagens</a></li>
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+<!--start container-->
+<div class="container">
+    <div class="section">
+        <div class="recent-activity-list chat-out-list">                
+            <div class="card-panel recent-activity-list-text">
+                <h1><i class="mdi-communication-chat"></i> {{dataMsg.assunto}}</h1>
+                <h6><i class="mdi-social-person"></i> <strong>{{dataMsg.remetente}}</strong></h6>
+                <h6><i class="mdi-device-access-time"></i> {{dataMsg.data}}</h6>
+                <hr>
+                <p>{{dataMsg.mensagem}}</p>
+                <div class="card-panel teal lighten-5">
+                    <h5>Anexos</h5>
+                    <ul>
+                        <li ng-repeat="link in dataMsg.imagens"><a href="{{link.imagem}}" download="{{link.imagem}}">{{link.nome}}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-panel">
+                <h5>Respostas</h5>
+                <div ng-repeat="respostaMsg in dataMsg.resposta" class="card-panel">
+                    <h6><i class="mdi-social-person"></i> <strong>{{respostaMsg.remetente}}</strong></h6>
+                    <h6><i class="mdi-device-access-time"></i> {{respostaMsg.data}}</h6>
+                    <hr>
+                    <p>{{respostaMsg.resposta}}</p>
+                    <div class="card-panel teal lighten-5" ng-if="respostaMsg.imagens !== NULL">
+                        <h5>Anexos</h5>
+                        <ul>
+                            <li ng-repeat="link in respostaMsg.imagens"><a href="{{link.imagem}}" download="{{link.imagem}}">{{link.nome}}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <br><br>
+        <hr><hr>
+        <form>
+            <input type="hidden" value="{{id}}" id="idUsr">
+            <input type="hidden" value="{{dataMsg.$id}}" id="idMsg">
+            <input type="hidden" value="{{dataMsg.remetente}}" id="remetente">
+            <div class="row">
+                <div class="input-field col s12">
+                    <label for="resposta">Responder</label>
+                    <textarea id="resposta" class="materialize-textarea" required></textarea>
+                </div>
+                <div class="file-field input-field col s12">                    
+                    <div class="btn">
+                        <span>Anexar Arquivos</span>
+                        <input type="file" multiple id="arquivos">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="input-field col s12">                                        
+                    <button onclick="enviar()" class="btn green waves-effect waves-light left" type="submit" name="action">Responder
+                        <i class="mdi-content-send right"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--end container-->
+
+<script>
+
+            function dataAtual() {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                var seconds = today.getSeconds();
+                var minutes = today.getMinutes();
+                var hour = today.getHours();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+
+
+                if (minutes < 0) {
+                    minutes = '0' + minutes;
+                }
+
+                if (seconds < 0) {
+                    seconds = '0' + seconds;
+                }
+
+                if (hour < 0) {
+                    hour = '0' + hour;
+                }
+
+
+                today = dd + '/' + mm + '/' + yyyy + ' - ' + hour + ':' + minutes + ':' + seconds;
+                return today;
+            }
+            ;
+
+            function sleep(milliseconds) {
+                var start = new Date().getTime();
+                for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds) {
+                        break;
+                    }
+                }
+            };
+
+            function enviar() {
+                var idUsr = $("#idUsr").val();
+                var idMsg = $("#idMsg").val();
+
+                var data = new Date();
+
+                var resposta = $('#resposta').val();
+                var remetente = $('#remetente').val();
+
+                firebase.database().ref('notificacoes/' + idUsr + '/' + idMsg + '/resposta/' + data).set({
+                    resposta: resposta,
+                    data: dataAtual(),
+                    remetente: remetente
+                });
+
+                firebase.database().ref('notificacoes/' + idUsr + '/' + idMsg).update({status: 0});
+
+                var storageRef = firebase.storage().ref();
+
+                var arquivos = $("#arquivos");
+                var files = arquivos[0].files;
+
+                // loop through files
+                for (var i = 0; i < files.length; i++) {
+                    //or
+                    file = files[i];
+
+                    // Push to child path.
+                    storageRef.child('notificacoes/' + file.name).put(file).then(function (snapshot) {
+                        console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+                        sleep(1500);
+                        var url = snapshot.metadata.downloadURLs[0];
+                        var nomeArquivo = snapshot.metadata.name;
+                        firebase.database().ref('notificacoes/' + idUsr + '/' + idMsg + '/resposta/' + data + '/imagens/' + startTime()).update({
+                            imagem: url,
+                            nome: nomeArquivo
+                        });
+                    }, function (error) {
+                        // [START onfailure]
+                        console.error('Upload failed:', error);
+                        // [END onfailure]
+                    });
+                    // [END oncomplete]
+                }
+
+
+                swal("Notificação enviada com sucesso!", "", "success");
+                window.location.href = "#msg/" + idUsr + "/" + idMsg;
+            }
+            ;
+</script>

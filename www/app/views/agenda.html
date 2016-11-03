@@ -1,0 +1,207 @@
+<script src="js/table-script.js" type="text/javascript"></script>
+<link href="css/customTable.css" rel="stylesheet" type="text/css"/>
+
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li><a href="#/">Dashboard</a></li>
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+
+<!--start container-->
+<div class="container">
+    <div class="section">
+
+        <a class="modal-trigger waves-effect waves-light btn-large" href="#mAddAgenda"><i class="mdi-content-add right"></i>Criar Agendamento</a><br><br>
+        <!-- Modal Structure -->
+        <div id="mAddAgenda" class="modal">
+            <form method="post" id="agendamento">
+                <div class="modal-content">
+                    <h4 class="center-align">Adicionar Novo Agendamento</h4>
+                    <hr><br>
+                    <div class="row">
+                        <div ng-controller="nomeController">
+                            <input type="hidden" id="idConsultor" value="{{data.$id}}">
+                            <input type="hidden" id="nomeConsultor" value="{{data.nome}}">
+                        </div>
+                        <div class="input-field col s12">
+                            <label for="planejamento">Planejamento</label>
+                            <input type="text" ng-model="planejamentoC" name="planejamento" list="planejamentos" id="planejamento" class="validate">
+                            <datalist id="planejamentos" ng-controller="planejamentosController">
+                                <option ng-repeat="planejamento in data" id="{{planejamento.$id}}" value="{{planejamento.dados.titulo}}">
+                            </datalist> 
+                        </div>
+                        <div class="input-field col s12 m6 l6">
+                            <input id="data" name="data" type="date" class="validate">
+                            <label class="active"  for="data">Data</label>
+                        </div>                        
+                        <div class="input-field col s12 m6 l6">
+                            <label for="cliente">Cliente</label>
+                            <input type="text" ng-model="clienteC" name="cliente" list="clientes" id="cliente" class="validate">
+                            <datalist id="clientes" ng-controller="clientesController">
+                                <option ng-repeat="cliente in data" id="{{cliente.$id}}" value="{{cliente.nome}}">                      
+                            </datalist> 
+                        </div>
+                        <div class="input-field col s12">
+                            <label for="propriedade">Propriedade</label>
+                            <input type="text" name="propriedade" ng-model="propriedadeC" list="propriedadesList" id="propriedade" class="validate">                            
+                            <datalist id="propriedadesList" ng-controller="propriedadesController">
+                                <option ng-repeat="prop in data" id="{{prop.$id}}" value="{{prop.nome_fazenda}}">                  
+                            </datalist>
+                        </div>                        
+                        <div class="input-field col s12">
+                            <label for="observacao">Observação</label>
+                            <textarea id="observacao" name="observacao" class="materialize-textarea"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="salvar()" class="waves-effect waves-light green btn"><i class="mdi-content-send right"></i>Cadastrar</button>
+                </div>
+                <br>
+            </form>
+        </div>
+        <div class="divider"></div><br>
+        <div id="table-datatables">
+            <form method="post" action="javascript:;" id="frm-filtro">                
+                <div class="input-field">
+                    <label for="pesquisar">Pesquisar</label>
+                    <input type="text" id="pesquisar" name="pesquisar" size="30" />                
+                </div>
+            </form>
+            <table id="data-table-simple" class="responsive-table display hoverable striped centered" cellspacing="0" summary="Tabela de Clientes">
+                <thead class="cyan white-text">
+                    <tr>
+                        <th data-field="Data"><i class="mdi-editor-insert-invitation"></i> Data</th>
+                        <th data-field="Cliente"><i class="mdi-image-tag-faces"></i> Cliente</th>
+                        <th data-field="Propriedade"><i class="mdi-maps-terrain"></i> Propriedade</th>
+                        <th data-field="Ações"><i class="mdi-action-settings"></i> Ações</th>
+                    </tr>
+                </thead>               
+
+                <tbody>
+                    <tr ng-repeat="consultoria in data">
+                        <td>{{consultoria.data}}</td>
+                        <td>{{consultoria.cliente}}</td>
+                        <td>{{consultoria.propriedade}}</td>
+                        <td>
+                            <a class="btn teal waves-effect waves-light" href="#consultoria/{{consultoria.$id}}"><i class="mdi-action-info"></i></a>
+                            <form style="display: inline-block;">
+                                <input id="uid" type="hidden" value="{{consultoria.$id}}">
+                                <button onclick="deletar()" class="btn red waves-effect waves-light"  data-position="top" data-tooltip="Excluir"><i class="mdi-action-delete"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--end container-->
+
+
+<script type="text/javascript">
+            $(document).ready(function () {
+                $('.modal-trigger').leanModal();
+                $('select').material_select();
+            });
+
+            function deletar() {
+
+                var id = $('#uid').val();
+
+                swal({title: "Excluir?",
+                    text: "Você deseja realmente excluir este agendamento?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim!",
+                    cancelButtonText: "Não!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false},
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                firebase.database().ref('consultorias/' + id).remove();
+                                swal("Deletado!", "Agendamento excluído com sucesso!", "success");
+                            } else {
+                                swal("Cancelado", "Agendamento não excluído :)", "error");
+                            }
+                        });
+
+            };
+
+            function salvar() {
+                swal({title: "Salvando!",
+                    text: "Aguarde...",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                var consultor = $("#nomeConsultor").val();
+                var idConsultor = $("#idConsultor").val();
+
+                var planejamento = $("#planejamento");
+                var dataList = $("#planejamentos");
+
+                var value = planejamento.val();
+                var option = $("option", dataList).filter(function () {
+                    return this.value === value;
+                });
+                var idPlanejamento = option.attr("id");
+
+                var cliente = $("#cliente");
+                var dataList = $("#clientes");
+
+                var value = cliente.val();
+                var option = $("option", dataList).filter(function () {
+                    return this.value === value;
+                });
+                var idCliente = option.attr("id");
+                var cliente = $("#cliente").val();
+
+                var propriedade = $("#propriedade");
+                var dataList = $("#propriedadesList");
+
+                var value = propriedade.val();
+                var option = $("option", dataList).filter(function () {
+                    return this.value === value;
+                });
+                var idPropriedade = option.attr("id");
+                var propriedade = $("#propriedade").val();
+
+                var toMmDdYy = function (input) {
+                    var ptrn = /(\d{4})\-(\d{2})\-(\d{2})/;
+                    if (!input || !input.match(ptrn)) {
+                        return null;
+                    }
+                    return input.replace(ptrn, '$3/$2/$1');
+                };
+
+                var data = toMmDdYy($('#data').val());
+                var observacao = $('#observacao').val();
+
+                var newPostKey = firebase.database().ref().child('consultorias').push().key;
+                firebase.database().ref('consultorias/' + newPostKey).set({
+                    idConsultor: idConsultor,
+                    consultor: consultor,
+                    cliente: cliente,
+                    idCliente: idCliente,
+                    propriedade: propriedade,
+                    idPropriedade: idPropriedade,
+                    data: data,
+                    observacao: observacao,
+                    status: "Agendado",
+                    idPlanejamento: idPlanejamento   
+                });
+                swal("Consultoria Agendada com sucesso!", "", "success");
+
+            };
+
+</script>

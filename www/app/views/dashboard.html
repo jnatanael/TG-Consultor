@@ -1,0 +1,58 @@
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+<!--start container-->
+<div class="container">
+    <div class="section">
+        <div class="row">
+            <div class="col s12">
+
+                <ul id="task-card" class="collection with-header" ng-controller="agendaController">
+                    <li class="collection-header cyan">
+                        <h4 class="task-card-title">Agenda do dia</h4>
+                        <p class="task-card-date">{{today}}</p>
+                    </li>
+                    <li ng-repeat="consultoria in data" ng-if="consultoria.data === today" class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                        <a class="secondary-content task-cat orange waves-effect waves-light" href="#consultoria/{{consultoria.$id}}">Acessar <i class="mdi-content-send right"></i></a>
+                        {{consultoria.cliente}} - <em>{{consultoria.propriedade}}</em><br>                            
+                    </li>
+                </ul>                
+            </div>
+            <div class="col s12">
+                <ul id="task-card" class="collection with-header" ng-controller="agendaController">
+                    <li class="collection-header orange">
+                        <h4 class="task-card-title">Agenda de Consultorias</h4>
+                    </li>
+                    <li ng-repeat="consultoria in data" ng-if="consultoria.status === 'Agendado'"  class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                        <a class="secondary-content task-cat orange waves-effect waves-light" href="#consultoria/{{consultoria.$id}}">Acessar <i class="mdi-content-send right"></i></a>
+                        {{consultoria.cliente}} - <em>{{consultoria.propriedade}}</em><br>
+                        Data: {{consultoria.data}}
+                    </li>                    
+                </ul>               
+            </div>
+            <div class="col s12">
+                <ul id="task-card" class="collection with-header" ng-controller="agendaController">
+                    <li class="collection-header grey">
+                        <h4 class="task-card-title">Consultorias Aguardando Aprovação</h4>
+                    </li>
+                    <li ng-repeat="consultoria in data" ng-if="consultoria.status === 'aguardando'"  class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                        <a class="secondary-content task-cat orange waves-effect waves-light" href="#consultoria/{{consultoria.$id}}">Acessar <i class="mdi-content-send right"></i></a>
+                        {{consultoria.cliente}} - <em>{{consultoria.propriedade}}</em><br>
+                        Data: {{consultoria.data}}
+                    </li>                    
+                </ul>               
+            </div>
+        </div>
+    </div>
+</div>
+<!--end container-->

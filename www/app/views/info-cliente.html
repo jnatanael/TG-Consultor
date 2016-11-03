@@ -1,0 +1,113 @@
+<script src="js/table-script.js" type="text/javascript"></script>
+<link href="css/customTable.css" rel="stylesheet" type="text/css"/>
+
+
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li><a href="#/">Dashboard</a></li>
+                    <li><a href="#clientes">Clientes</a></li>
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--breadcrumbs end-->
+
+<!--start container-->
+<div class="container">
+    <div class="section">
+        <h1><i class="mdi-social-person"></i>{{data.nome}}</h1>
+        <div class="divider"></div>
+        <fieldset>
+            <legend>Informações Pessoais</legend>
+            <h5><strong>E-mail:</strong>  <a href="mailto:{{data.email}}" target="_blank" title="Email {{data.usuario}}">{{data.email}}</a></h5>
+            <h5><strong>Telefone:</strong> <a href="callto:{{data.telefone}}" target="_blank" title="Telefone {{data.usuario}}">{{data.telefone}}</a></h5>
+            <h5><strong>Celular:</strong> <a href="callto:{{data.celular}}" target="_blank" title="Celular {{data.usuario}}">{{data.celular}}</a></h5>
+            <h5><strong>Data de Nascimento:</strong> {{dataNascimento}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Informações Comerciais</legend>
+            <h5><strong>Razão Social:</strong> {{data.razao_social_propriedade}}</h5>
+            <h5><strong>Nome Fantazia:</strong> {{data.nome_fantasia_propriedade}}</h5>
+            <h5><strong>CNPJ:</strong> {{data.cnpj_propriedade}}</h5>
+            <h5><strong>Inscrição Estadual:</strong> {{data.inscricao_estadual_propriedade}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Informações Residenciais</legend>
+            <h5><strong>Endereço:</strong> {{data.rua}}, {{data.numero}}</h5>
+            <h5><strong>Bairro</strong> {{data.bairro}}</h5>
+            <h5><strong>CEP:</strong> {{data.cep}}</h5>
+            <h5><strong>Cidade:</strong> {{data.cidade}} - {{data.estado}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Informações de Redes Sociais</legend>
+            <h5><strong>Facebook:</strong> <a href="{{data.facebook}}" target="_blank" title="Facebook {{data.data.usuario}}">{{data.facebook}}</a></h5>
+            <h5><strong>Linkedin:</strong> <a href="{{data.linkedin}}" target="_blank" title="Linkedin {{data.data.usuario}}">{{data.linkedin}}</a></h5>
+            <h5><strong>Whatsapp:</strong> <a href="whatsapp://send?abid=username&text={{data.whatsapp}}" title="Whatsapp {{data.usuario}}">{{data.whatsapp}}</a></h5>
+        </fieldset>
+        <fieldset>
+            <legend>Administrador</legend>
+            <h5><strong>Nome:</strong> {{data.nome_administrador}}</h5>
+            <h5><strong>Email:</strong> {{data.email_administrador}}</h5>
+            <h5><strong>Telefone:</strong> {{data.telefone_administrador}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Gerente</legend>
+            <h5><strong>Nome:</strong> {{data.nome_gerente}}</h5>
+            <h5><strong>Email:</strong> {{data.email_gerente}}</h5>
+            <h5><strong>Telefone:</strong> {{data.telefone_gerente}}</h5>
+        </fieldset>
+        <fieldset>
+            <legend>Propriedades</legend>
+            <div class="section">
+                <div class="row">
+                    <div class="col s12">
+
+                        <div id="table-datatables">
+                            <form method="post" action="javascript:;" id="frm-filtro">                
+                                <div class="input-field">
+                                    <label for="pesquisar">Pesquisar</label>
+                                    <input type="text" id="pesquisar" name="pesquisar" size="30" />                
+                                </div>
+                            </form>
+                            <table id="data-table-simple" class="responsive-table display hoverable centered" cellspacing="0" summary="Tabela de propriedades">
+
+                                <thead>
+                                    <tr>
+                                        <th data-field="Propriedade"><i class="mdi-maps-terrain"></i> Propriedade</th>
+                                        <th data-field="Cidade / UF"><i class="mdi-maps-place"></i> Cidade / UF</th>
+                                        <th data-field="Ações"><i class="mdi-action-settings"></i> Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="propriedade in dataProp">
+                                        <td>{{propriedade.nome_fazenda}}</td>
+                                        <td>{{propriedade.cidade}} / {{propriedade.estado}}</td>
+                                        <td>
+                                            <a class="btn teal waves-effect waves-light" href="#info-propriedade/{{propriedade.$id}}"><i class="mdi-action-info"></i> Informações</a>
+                                        </td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--end container-->
+
+                    <script type="text/javascript">
+                                /*Show entries on click hide*/
+                                $(document).ready(function () {
+                                    $('select').material_select();
+                                });
+                    </script>                    
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<!--end container-->

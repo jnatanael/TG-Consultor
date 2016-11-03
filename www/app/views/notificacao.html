@@ -1,0 +1,415 @@
+
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li><a href="#/">Dashboard</a></li>
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs end-->
+
+<!--start container-->
+<div class="container">
+    <div class="section">
+        <p class="caption">Envie notificações para os usuários dos sistema.</p>
+        <div class="divider"></div><br>
+        <form enctype="multipart/form-data">
+            <div class="row">
+                <div class="col s12">
+                    <input type="checkbox" class="filled-in" id="urgente">
+                    <label for="urgente">URGENTE</label>
+                </div>
+                <div class="input-field col s12 m6 l6">
+                    <select name="id_tipo_contacto" id="id_tipo_contacto">
+                        <option value="" disabled selected>Selecione o Tipo de Usuário</option>
+                        <option value="resonsavelTecnico">Responsável Técnico</option>
+                        <option value="consultor">Consultor</option>
+                        <option value="cliente">Cliente</option>
+                    </select>
+                </div>
+                <div class="input-field col s12 m6 l6">
+                    <div class="padrao formulario">
+                        <label for="aguarde">Aguardando...</label>
+                        <input type="text" id="aguarde" disabled>
+                    </div>
+                    <div class="resonsavelTecnico formulario" style="display: none">
+                        <label for="responsavel">Responsável Técnico</label>
+                        <input type="text" list="lResponsavel" id="responsavel" class="validate">
+                        <datalist id="lResponsavel">
+                            <option  ng-repeat="responsavel in data2" id="{{responsavel.$id}}" value="{{responsavel.nome}}">                         
+                        </datalist>
+                    </div>
+                    <div class="consultor formulario" style="display: none">
+                        <label for="consultor">Consultor</label>
+                        <input type="text" list="lConsultor" id="consultor" class="validate">
+                        <datalist id="lConsultor">
+                            <option ng-repeat="consultor in data3" id="{{consultor.$id}}" value="{{consultor.nome}}">                         
+                        </datalist>
+                    </div>
+                    <div class="cliente" style="display: none">
+                        <label for="cliente">Cliente</label>
+                        <input type="text" list="lCliente" id="cliente" class="validate">
+                        <datalist id="lCliente">
+                            <option ng-repeat="cliente in data1" id="{{cliente.$id}}" value="{{cliente.nome}}">                         
+                        </datalist>
+                    </div>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="titulo" type="text" class="validate" required>
+                    <label for="titulo">Assunto</label>
+                </div>
+                <div class="input-field col s12">
+                    <label for="msgtextarea">Notificação</label>
+                    <textarea id="msgtextarea" class="materialize-textarea" required></textarea>
+                </div>
+                <div class="file-field input-field col s12">                    
+                    <div class="btn">
+                        <span>Anexar Arquivos</span>
+                        <input type="file" multiple id="arquivos">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </div>
+            <input id="remetenteID" type="hidden" value="{{user.$id}}">
+            <input id="remetente" type="hidden" value="{{user.nome}}">
+            <div class="row">
+                <div class="input-field col s12">                    
+                    <div class="padrao formulario">
+                        <button class="btn green waves-effect waves-light left" type="submit" name="action" disabled="">Enviar Notificação
+                            <i class="mdi-content-send right"></i>
+                        </button>
+                    </div>
+                    <div class="resonsavelTecnico formulario" style="display: none">
+                        <button onclick="enviarResponsavel()" class="btn green waves-effect waves-light left" type="submit" name="action">Enviar Notificação para Responsável Técnico
+                            <i class="mdi-content-send right"></i>
+                        </button>
+                    </div>
+                    <div class="consultor formulario" style="display: none">
+                        <button onclick="enviarConsultor()" class="btn green waves-effect waves-light left" type="submit" name="action">Enviar Notificação para Consultor
+                            <i class="mdi-content-send right"></i>
+                        </button>
+                    </div>
+                    <div class="cliente" style="display: none">
+                        <button onclick="enviarcliente()" class="btn green waves-effect waves-light left" type="submit" name="action">Enviar Notificação para Cliente
+                            <i class="mdi-content-send right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--end container-->
+
+
+
+<script type="text/javascript">
+            $(document).ready(function () {
+                $('select').material_select();
+            });
+            $("#id_tipo_contacto").on('change', function () {
+                $('.formulario').hide();
+                $('.' + this.value).show();
+            });
+            function dataAtual() {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                var seconds = today.getSeconds();
+                var minutes = today.getMinutes();
+                var hour = today.getHours();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+
+                if (minutes < 0) {
+                    minutes = '0' + minutes;
+                }
+
+                if (seconds < 0) {
+                    seconds = '0' + seconds;
+                }
+                if (hour < 0) {
+                    hour = '0' + hour;
+                }
+
+
+
+                today = dd + '/' + mm + '/' + yyyy + ' - ' + hour + ':' + minutes + ':' + seconds;
+                return today;
+            }
+            ;
+
+            function checkTime(i) {
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                return i;
+            };
+
+            function startTime() {
+                var today = new Date();
+                var h = today.getHours();
+                var m = today.getMinutes();
+                var s = today.getSeconds();
+
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+                // add a zero in front of numbers<10
+                m = checkTime(m);
+                s = checkTime(s);
+                return dd + mm + yyyy + h + m + s;
+            };
+
+
+            function sleep(milliseconds) {
+                var start = new Date().getTime();
+                for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds) {
+                        break;
+                    }
+                }
+            };
+            function enviarResponsavel() {
+
+                swal({title: "Enviando Arquivos!",
+                    text: "Aguarde...",
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+                
+                var urgente = $('#urgente').is(':checked');
+                
+                if(urgente === true){
+                    urgente = 'urgente';
+                }else{
+                    urgente = 'no';
+                }
+
+
+                var responsavel = $("#responsavel");
+                var dataList = $("#lResponsavel");
+                var value = responsavel.val();
+                var option = $("option", dataList).filter(function () {
+                    return this.value === value;
+                });
+                var id = option.attr("id");
+                var responsavel = $("#responsavel").val();
+                var msg = $('#msgtextarea').val();
+                var data = new Date();
+                var titulo = $('#titulo').val();
+                var remetente = $('#remetente').val();
+                var remetenteID = $('#remetenteID').val();
+
+                firebase.database().ref('notificacoes/' + id + '/' + data).set({
+                    mensagem: msg,
+                    data: dataAtual(),
+                    assunto: titulo,
+                    status: 0,
+                    usuario: responsavel,
+                    remetente: remetente,
+                    remetenteID: remetenteID,
+                    urgente: urgente
+                });
+
+                var storageRef = firebase.storage().ref();
+
+                var arquivos = $("#arquivos");
+                var files = arquivos[0].files;
+
+                // loop through files
+                for (var i = 0; i < files.length; i++) {
+                    //or
+                    file = files[i];
+
+                    // Push to child path.
+                    storageRef.child('notificacoes/' + file.name).put(file).then(function (snapshot) {
+                        console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+                        sleep(1500);
+                        var url = snapshot.metadata.downloadURLs[0];
+                        var nomeArquivo = snapshot.metadata.name;
+                        firebase.database().ref('notificacoes/' + id + '/' + data + '/imagens/' + startTime()).update({
+                            imagem: url,
+                            nome: nomeArquivo
+                        });
+                    }, function (error) {
+                        // [START onfailure]
+                        console.error('Upload failed:', error);
+                        // [END onfailure]
+                    });
+                    // [END oncomplete]
+                }
+
+                swal("Notificação enviada com sucesso para", responsavel, "success");
+                window.location.href = "#notificacao";
+            };
+            function enviarConsultor() {
+                
+                
+                swal({title: "Enviando Arquivos!",
+                    text: "Aguarde...",
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+                
+                var urgente = $('#urgente').is(':checked');
+                
+                if(urgente === true){
+                    urgente = 'urgente';
+                }else{
+                    urgente = 'no';
+                }
+                
+                var consultor = $("#consultor");
+                var dataList = $("#lConsultor");
+                var value = consultor.val();
+                var option = $("option", dataList).filter(function () {
+                    return this.value === value;
+                });
+                var id = option.attr("id");
+                var consultor = $("#consultor").val();
+                var msg = $('#msgtextarea').val();
+                var data = new Date();
+                var titulo = $('#titulo').val();
+                var remetente = $('#remetente').val();
+                var remetenteID = $('#remetenteID').val();
+                firebase.database().ref('notificacoes/' + id + '/' + data).set({
+                    mensagem: msg,
+                    data: dataAtual(),
+                    assunto: titulo,
+                    status: 0,
+                    usuario: consultor,
+                    remetente: remetente,
+                    remetenteID: remetenteID,
+                    urgente: urgente
+                });
+
+                var storageRef = firebase.storage().ref();
+
+                var arquivos = $("#arquivos");
+                var files = arquivos[0].files;
+
+                // loop through files
+                for (var i = 0; i < files.length; i++) {
+                    //or
+                    file = files[i];
+
+                    // Push to child path.
+                    storageRef.child('notificacoes/' + file.name).put(file).then(function (snapshot) {
+                        console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+                        sleep(1500);
+                        var url = snapshot.metadata.downloadURLs[0];
+                        var nomeArquivo = snapshot.metadata.name;
+                        firebase.database().ref('notificacoes/' + id + '/' + data + '/imagens/' + startTime()).update({
+                            imagem: url,
+                            nome: nomeArquivo
+                        });
+                    }, function (error) {
+                        // [START onfailure]
+                        console.error('Upload failed:', error);
+                        // [END onfailure]
+                    });
+                    // [END oncomplete]
+                }
+
+
+                swal("Notificação enviada com sucesso para", consultor, "success");
+                window.location.href = "#notificacao";
+            };
+            function enviarcliente() {
+                
+                swal({title: "Enviando Arquivos!",
+                    text: "Aguarde...",
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+                
+                var urgente = $('#urgente').is(':checked');
+                
+                if(urgente === true){
+                    urgente = 'urgente';
+                }else{
+                    urgente = 'no';
+                }
+                
+                var cliente = $("#cliente");
+                var dataList = $("#lCliente");
+                var value = cliente.val();
+                var option = $("option", dataList).filter(function () {
+                    return this.value === value;
+                });
+                var id = option.attr("id");
+                var cliente = $("#cliente").val();
+                var msg = $('#msgtextarea').val();
+                var data = new Date();
+                var titulo = $('#titulo').val();
+                var remetente = $('#remetente').val();
+                var remetenteID = $('#remetenteID').val();
+                firebase.database().ref('notificacoes/' + id + '/' + data).set({
+                    mensagem: msg,
+                    data: dataAtual(),
+                    assunto: titulo,
+                    status: 0,
+                    usuario: cliente,
+                    remetente: remetente,
+                    remetenteID: remetenteID,
+                    urgente: urgente
+                });
+
+                var storageRef = firebase.storage().ref();
+
+                var arquivos = $("#arquivos");
+                var files = arquivos[0].files;
+
+                // loop through files
+                for (var i = 0; i < files.length; i++) {
+                    //or
+                    file = files[i];
+
+                    // Push to child path.
+                    storageRef.child('notificacoes/' + file.name).put(file).then(function (snapshot) {
+                        console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+                        sleep(1500);
+                        var url = snapshot.metadata.downloadURLs[0];
+                        var nomeArquivo = snapshot.metadata.name;
+                        firebase.database().ref('notificacoes/' + id + '/' + data + '/imagens/' + startTime()).update({
+                            imagem: url,
+                            nome: nomeArquivo
+                        });
+                    }, function (error) {
+                        // [START onfailure]
+                        console.error('Upload failed:', error);
+                        // [END onfailure]
+                    });
+                    // [END oncomplete]
+                }
+
+
+                swal("Notificação enviada com sucesso para", cliente, "success");
+                window.location.href = "#notificacao";
+            };</script>

@@ -1,0 +1,55 @@
+<script src="js/table-script.js" type="text/javascript"></script>
+<link href="css/customTable.css" rel="stylesheet" type="text/css"/>
+
+<div id="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <h5 class="breadcrumbs-title">{{message}}</h5>
+                <ol class="breadcrumbs">
+                    <li><a href="#/">Dashboard</a></li>
+                    <li class="active">{{message}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--breadcrumbs end-->
+
+<!--start container-->
+<div class="container">
+    <div class="section">
+        <div id="table-datatables">
+            <form method="post" action="javascript:;" id="frm-filtro">                
+                <div class="input-field">
+                    <label for="pesquisar">Pesquisar</label>
+                    <input type="text" id="pesquisar" name="pesquisar" size="30" />                
+                </div>
+            </form>
+            <table id="data-table-simple" class="responsive-table display hoverable centered" cellspacing="0" summary="Tabela de Clientes">
+                <thead>
+                    <tr>
+                        <th data-field="Nome"><i class="mdi-image-tag-faces"></i> Nome</th>
+                        <th data-field="Email"><i class="mdi-communication-email"></i> Email</th>
+                        <th data-field="Telefone"><i class="mdi-communication-phone"></i> Telefone</th>
+                        <th data-field="Ações"><i class="mdi-action-settings"></i> Ações</th>
+                    </tr>
+                </thead>               
+
+                <tbody>
+                    <tr ng-repeat="cliente in data">
+                        <td>{{cliente.nome}}</td>
+                        <td>{{cliente.email}}</td>
+                        <td>{{cliente.telefone}}</td>
+                        <td>
+                            <a class="btn teal waves-effect waves-light" href="#info-cliente/{{cliente.$id}}"><i class="mdi-action-info"></i></a>
+                            <a class="btn green waves-effect waves-light" href="#list-propriedades/{{cliente.$id}}"><i class="mdi-maps-terrain"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--end container-->
